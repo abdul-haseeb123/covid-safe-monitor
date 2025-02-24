@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import os
+import shutil
 from zipfile import ZipFile
 import random
 
@@ -75,16 +76,19 @@ with ZipFile("face-mask-detection.zip", "r") as zip_ref:
 
     for image_name in images_list:
         if image_name in val_images:
-            zip_ref.extract(f"images/{image_name}", val_dir)
+            zip_ref.extract(f"images/{image_name}", tmp_dir)
+            shutil.move(os.path.join(tmp_dir, "images", image_name), val_dir)
 
             zip_ref.extract(f"annotations/{image_name[:-3]}xml", tmp_dir)
             normalize_save_bbox(os.path.join(tmp_dir, "annotations", f"{image_name[:-3]}xml"), os.path.join(val_dir_labels, f"{image_name[:-3]}txt"))
         else:
-            zip_ref.extract(f"images/{image_name}", train_dir)
+            zip_ref.extract(f"images/{image_name}", tmp_dir)
+            shutil.move(os.path.join(tmp_dir, "images", image_name), train_dir)
 
             zip_ref.extract(f"annotations/{image_name[:-3]}xml", tmp_dir)
             normalize_save_bbox(os.path.join(tmp_dir, "annotations", f"{image_name[:-3]}xml"), os.path.join(train_dir_labels, f"{image_name[:-3]}txt"))
 
     print("Data extraction completed!")
+    shutil.rmtree(tmp_dir)
     
 
