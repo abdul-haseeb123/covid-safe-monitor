@@ -1,22 +1,13 @@
-import cv2 as cv
+from ultralytics import YOLO
+import os
 
-cap = cv.VideoCapture(1)
-if not cap.isOpened():
-    print("Cannot open camera")
-    exit()
+# Load model
+model = YOLO("yolo11n.pt")
 
-while True:
-    # Capture frame-by-frame
-    ret, frame = cap.read()
+sample_img = "dataset/images/train/maksssksksss0.png"
 
-    # if frame is read correctly ret is True
-    if not ret:
-        print("Can't receive frame (stream end?). Exiting ...")
-        break
-    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    cv.imshow('frame', gray)
-    if cv.waitKey(1) == ord('q'):
-        break
+results = model.predict(sample_img)
 
-cap.release()
-cv.destroyAllWindows()
+
+for r in results:
+    print(r.boxes)

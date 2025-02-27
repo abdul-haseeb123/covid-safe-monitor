@@ -7,3 +7,4 @@ names:
   0: with_mask
   1: without_mask
   2: mask_worn_incorrectly
+  3: person
